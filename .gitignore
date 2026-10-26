@@ -1,0 +1,13 @@
+# raw captures and logs (large, unit-specific)
+captures/
+*.sr
+*.vcd
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# esphome
+esphome/.esphome/
+esphome/secrets.yaml
