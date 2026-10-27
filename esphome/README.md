@@ -22,7 +22,8 @@ exactly the panel's poll cycle ([docs/protocol.md](../docs/protocol.md)).
 ## Hardware
 
 See [docs/hardware.md](../docs/hardware.md): BC547 driver on 21 (`tx_pin` inverted),
-4.7k pull-up + 1k on 22, MP1584EN from terminal 23. Do not use the UART0 TX pin.
+4.7k pull-up + 1k on 22, MP1584EN from terminal 23. Do not use the UART0 TX pin. Perfboard
+layout: [perfboard/](../perfboard/).
 
 ## Configuration
 

@@ -14,7 +14,7 @@ ventilation unit with Home Assistant.
 - [x] Bus master verified on a real unit ([tools/master.py](tools/master.py))
 - [ ] Remaining fields: alarm/status bits, a few constant values
 - [x] ESPHome external component (C++), running on a real unit — [esphome/](esphome/)
-- [ ] Perfboard/PCB design
+- [x] Perfboard layout — [perfboard/](perfboard/)
 
 ## Repository layout
 
@@ -23,6 +23,7 @@ ventilation unit with Home Assistant.
 | `docs/` | protocol, field map, hardware |
 | `tools/` | capture/analysis scripts (sigrok logic analyser) and a Python bus master |
 | `esphome/` | ESPHome external component `genvex_panel` and an example configuration |
+| `perfboard/` | perfboard layout of the replacement circuit (drawings, wiring list, generator) |
 
 ## Safety
 

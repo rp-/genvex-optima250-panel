@@ -55,6 +55,10 @@ Notes:
   (BC547 C-B-E, PN2222A usually E-B-C with the flat side facing you).
 - MP1584EN modules ship with a random output voltage: set **5.0 V without load** before
   connecting anything, then lock the trimpot.
+- The MP1584 feeds the XIAO 5V pin without a diode: **never connect USB while 23 is
+  powered**; flash via OTA or with the XIAO out of the board.
+
+A perfboard layout of this circuit is in [perfboard/](../perfboard/).
 
 ## Why a transistor on 21
 
