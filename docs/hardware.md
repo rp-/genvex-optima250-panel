@@ -62,3 +62,28 @@ The board's input on 21 draws ~23 mA when pulled low. Logic outputs (typically 4
 USB-TTL adapters and MCU pins cannot sink that reliably, so line 21 is switched by an
 NPN transistor (open collector). Equivalent alternatives: an SN74LS07/7407 open-collector
 buffer (non-inverting, 5 V supply) or a logic-level N-MOSFET (inverting).
+
+## Unit check: temperature sensors and bypass direction
+
+On units with the ON/OFF bypass (motor on terminal H8: 1 red, 2 blue, 3 yellow), the board
+reports the bypass state in read `02 04` (entity `bypass`). With the bypass closed (normal
+case) the unit recovers heat: one of T1/T4 is close to the extract air, the other close to
+the outdoor air; with the bypass open they swap roles. The bypass opens when the room
+temperature reaches setpoint + service 21 (and outdoor air is above service 29 and below
+the extract air), so lowering the setpoint by more than service 21 below the room
+temperature opens it within ~2 minutes.
+
+The unit's own temperatures cannot tell an inverted damper from swapped T1/T4 sensors —
+both look the same. Check with a thermometer **at a room supply vent**, a few minutes
+after each change:
+
+- `bypass` off: the vent must be warm (close to the extract air) and follow T1;
+- `bypass` on: the vent must get colder (towards the outdoor air) and follow T1.
+
+If the vent follows **T4** instead, the T1 and T4 sensors are swapped. This was the case on
+the reference unit (the H8 wiring was factory-correct): swap the T1 and T4 sensor plugs
+on the main board. Do not correct it in the firmware only — the board itself uses T4
+(exhaust air after the heat exchanger) for its frost protection (service 24). Only if T1
+is confirmed correct and the vent still contradicts `bypass` does the damper run
+inverted (swap red ↔ yellow on H8, blue stays on 2). Unit off and disconnected from
+mains before opening it.

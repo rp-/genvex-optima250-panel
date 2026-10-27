@@ -1,0 +1,126 @@
+# Example: Seeed XIAO ESP32C6 replacing the ES950 panel (circuit: docs/hardware.md).
+esphome:
+  name: genvex
+  friendly_name: Genvex Optima 250
+
+esp32:
+  board: esp32-c6-devkitc-1
+  variant: esp32c6
+  framework:
+    type: esp-idf
+
+external_components:
+  - source:
+      type: local
+      path: components
+
+logger:
+  hardware_uart: USB_SERIAL_JTAG   # keep the UARTs free for the link
+
+api:
+  encryption:
+    key: !secret api_key          # Home Assistant asks for it when adding the device
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:                             # fallback hotspot if the Wi-Fi is not reachable
+    password: !secret ap_password
+
+captive_portal:
+
+uart:
+  id: genvex_uart
+  baud_rate: 19200
+  tx_pin:
+    number: GPIO19        # XIAO D8 -> 1k -> BC547 base (collector on terminal 21)
+    inverted: true        # the transistor inverts
+  rx_pin: GPIO17          # XIAO D7 <- 1k <- terminal 22 (4.7k pull-up to 3V3)
+
+i2c:
+  sda: GPIO18             # XIAO D10
+  scl: GPIO20             # XIAO D9
+
+sensor:
+  - platform: sht4x
+    temperature:
+      id: room_temperature
+      name: Room temperature
+    humidity:
+      name: Room humidity
+  - platform: genvex_panel
+    supply_temperature:
+      name: Supply air temperature
+    outdoor_temperature:
+      name: Outdoor air temperature
+    exhaust_temperature:
+      name: Exhaust air temperature
+    extract_temperature:
+      name: Extract air temperature
+    supply_fan:
+      name: Supply fan
+    extract_fan:
+      name: Extract fan
+    # bypass_damper:         # units with a modulating (0–10 V) bypass damper only
+    #   name: Bypass damper
+
+binary_sensor:
+  - platform: genvex_panel
+    running:
+      name: Running
+    link:
+      name: Link to main board
+    bypass:
+      name: Bypass
+
+select:
+  - platform: genvex_panel
+    fan_mode:
+      name: Fan mode
+
+number:
+  - platform: genvex_panel
+    setpoint:
+      name: Temperature setpoint
+    # service 10–15; disabled in Home Assistant until enabled there.
+    # Values set here are kept until fan_speeds below is changed.
+    supply_step1:
+      name: Supply fan step 1
+    supply_step2:
+      name: Supply fan step 2
+    supply_step3:
+      name: Supply fan step 3
+    extract_step1:
+      name: Extract fan step 1
+    extract_step2:
+      name: Extract fan step 2
+    extract_step3:
+      name: Extract fan step 3
+
+switch:
+  - platform: genvex_panel
+    preheat:
+      name: Preheater
+
+genvex_panel:
+  uart_id: genvex_uart
+  room_temperature: room_temperature
+  fan_speeds:              # service menu 10-15 of YOUR unit
+    supply: [45, 60, 90]
+    extract: [45, 60, 85]
+  service:                 # service menu values of YOUR unit
+    t2_adjustment: 0.0     # 16 (panel: -3.0 for its self-heating; 0.0 with the SHT41)
+    preheat_temperature: -5.0  # 20
+    bypass_max: 2.0        # 21
+    frost_reduction: 5.0   # 24
+    water_frost_temperature: 5.0  # 26
+    bypass_min_outdoor: 4  # 29
+  defaults:                # used until changed from Home Assistant (then kept in flash)
+    fan_step: 1
+    setpoint: 20.5
+    preheat: true
+  boost_duration: 60min    # service 17

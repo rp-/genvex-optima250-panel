@@ -2,8 +2,8 @@
 
 Documentation of the proprietary link between the **Genvex Optima 250** main board
 **ES960** and its wall panel **ES950 "Optima Design"** (pre-2018 units without Modbus
-module), and — work in progress — an **ESPHome** firmware that replaces the panel and
-integrates the ventilation unit with Home Assistant.
+module), and an **ESPHome** firmware that replaces the panel and integrates the
+ventilation unit with Home Assistant.
 
 ## Status
 
@@ -13,7 +13,7 @@ integrates the ventilation unit with Home Assistant.
 - [x] Electrical interface and replacement circuit — [docs/hardware.md](docs/hardware.md)
 - [x] Bus master verified on a real unit ([tools/master.py](tools/master.py))
 - [ ] Remaining fields: alarm/status bits, a few constant values
-- [ ] ESPHome external component (C++) — [esphome/](esphome/)
+- [x] ESPHome external component (C++), running on a real unit — [esphome/](esphome/)
 - [ ] Perfboard/PCB design
 
 ## Repository layout
@@ -22,7 +22,7 @@ integrates the ventilation unit with Home Assistant.
 |---|---|
 | `docs/` | protocol, field map, hardware |
 | `tools/` | capture/analysis scripts (sigrok logic analyser) and a Python bus master |
-| `esphome/` | ESPHome component (planned) |
+| `esphome/` | ESPHome external component `genvex_panel` and an example configuration |
 
 ## Safety
 
