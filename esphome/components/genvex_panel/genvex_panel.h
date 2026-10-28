@@ -13,9 +13,6 @@
 #ifdef USE_BINARY_SENSOR
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #endif
-#ifdef USE_SELECT
-#include "esphome/components/select/select.h"
-#endif
 #ifdef USE_NUMBER
 #include "esphome/components/number/number.h"
 #endif
@@ -33,9 +30,13 @@ static constexpr uint8_t FAN_SPEED_COUNT = 6;
 // reads ±25.6 K off once.
 static constexpr uint16_t TEMP_MAX_JUMP = 100;
 
-// Fan mode as offered to the user (= select index). OFF is the panel's calendar "H0",
-// BOOST its "step 4" (step 3 at 100 %).
+// Fan mode as offered to the user (fan entity: off, speed 1–3, preset "Boost"). OFF is the
+// panel's calendar "H0", BOOST its "step 4" (step 3 at 100 %).
 enum FanMode : uint8_t { FAN_OFF = 0, FAN_STEP1 = 1, FAN_STEP2 = 2, FAN_STEP3 = 3, FAN_BOOST = 4 };
+
+#ifdef USE_FAN
+class GenvexFan;
+#endif
 
 // One entry of the panel's poll cycle (see docs/protocol.md).
 struct CycleItem {
@@ -78,8 +79,8 @@ class GenvexPanel : public Component, public uart::UARTDevice {
   void set_link_binary_sensor(binary_sensor::BinarySensor *s) { this->link_ = s; }
   void set_bypass_binary_sensor(binary_sensor::BinarySensor *s) { this->bypass_ = s; }
 #endif
-#ifdef USE_SELECT
-  void set_fan_mode_select(select::Select *s) { this->fan_mode_select_ = s; }
+#ifdef USE_FAN
+  void set_fan(GenvexFan *f) { this->fan_ = f; }
 #endif
 #ifdef USE_NUMBER
   void set_setpoint_number(number::Number *n) { this->setpoint_number_ = n; }
@@ -91,6 +92,7 @@ class GenvexPanel : public Component, public uart::UARTDevice {
 
   // control (called by the entities)
   void set_fan_mode(FanMode mode);
+  FanMode get_fan_mode() const { return this->fan_mode_; }
   void set_setpoint(float celsius);
   void set_preheat(bool on);
   void set_fan_speed(uint8_t index, uint8_t percent);
@@ -164,8 +166,8 @@ class GenvexPanel : public Component, public uart::UARTDevice {
   binary_sensor::BinarySensor *link_{nullptr};
   binary_sensor::BinarySensor *bypass_{nullptr};
 #endif
-#ifdef USE_SELECT
-  select::Select *fan_mode_select_{nullptr};
+#ifdef USE_FAN
+  GenvexFan *fan_{nullptr};
 #endif
 #ifdef USE_NUMBER
   number::Number *setpoint_number_{nullptr};

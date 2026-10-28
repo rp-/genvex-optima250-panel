@@ -7,6 +7,10 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/log.h"
 
+#ifdef USE_FAN
+#include "fan/genvex_fan.h"
+#endif
+
 namespace esphome::genvex_panel {
 
 static const char *const TAG = "genvex_panel";
@@ -435,9 +439,9 @@ void GenvexPanel::save_() {
 }
 
 void GenvexPanel::publish_controls_() {
-#ifdef USE_SELECT
-  if (this->fan_mode_select_ != nullptr)
-    this->fan_mode_select_->publish_state(static_cast<size_t>(this->fan_mode_));
+#ifdef USE_FAN
+  if (this->fan_ != nullptr)
+    this->fan_->publish_mode(this->fan_mode_);
 #endif
 #ifdef USE_NUMBER
   if (this->setpoint_number_ != nullptr)

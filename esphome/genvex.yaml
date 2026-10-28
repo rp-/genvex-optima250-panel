@@ -77,10 +77,10 @@ binary_sensor:
     bypass:
       name: Bypass
 
-select:
+fan:
   - platform: genvex_panel
-    fan_mode:
-      name: Fan mode
+    ventilation:
+      name: Ventilation
 
 number:
   - platform: genvex_panel

@@ -81,7 +81,7 @@ needs a correction).
 |---|---|
 | `sensor` | `supply_temperature`, `outdoor_temperature`, `exhaust_temperature`, `extract_temperature`, `supply_fan`, `extract_fan`, `bypass_damper` (modulating damper only) |
 | `binary_sensor` | `running`, `link`, `bypass` (ON/OFF damper open) |
-| `select` | `fan_mode` (Off / Step 1 / Step 2 / Step 3 / Boost) |
+| `fan` | `ventilation`: off, speed 1–3 (= step 1–3), preset mode `Boost` |
 | `number` | `setpoint` (15–30 °C, 0.5 steps); `supply_step1`…`supply_step3`, `extract_step1`…`extract_step3` (0–100 %, see below) |
 | `switch` | `preheat` |
 
@@ -98,6 +98,7 @@ underpressure. Boost always runs step 3 at 100 %.
 
 "Off" sends what the panel sends for a calendar "H0" slot: the main board stops the
 fans after an after-run of ~2 minutes. Like the fan steps, it is kept in flash, so the
-unit stays off after a power cut until another mode is selected.
+unit stays off after a power cut until the fan is turned on again. Turning it on without a
+speed resumes the last step (step 1 after a reboot while off).
 
 The weekly program and the filter reminder are left to Home Assistant.
